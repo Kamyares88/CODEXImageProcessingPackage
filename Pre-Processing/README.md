@@ -19,7 +19,11 @@ This macro also requires the user to brows for a working directory. This is the 
     ![](Images/Figure%202.png) 
 
 
-  * Next, another dialog box pops up (Figure 3) asking the user to enter the name of each channel as well as choosing which channel should be used for registering. 
+  * Next, another dialog box pops up (Figure 3) asking the user to enter the name of each channel as well as choosing which channel should be used for registering.  
   
     Figure 3
     ![](Images/Figure%203.png) 
+    
+  * Next, the user is asked to brows for the working directory. This is the directory in which results of this step will be saved.
+  
+  * Next, the user is asked to brows for a source directory. This is the directory in which the results of Step 1 are saved.
