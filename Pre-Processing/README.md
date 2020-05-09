@@ -18,7 +18,7 @@ This macro also requires the user to brows for a working directory. This is the 
 Figure 2
 ![](Images/Figure%202.png) 
 
-*
+
   * Next, another dialog box pops up (Figure 3) asking the user to enter the name of each channel as well as choosing which channel should be used for registering. 
   
 Figure 2=3
