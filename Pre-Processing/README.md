@@ -15,8 +15,8 @@ This macro also requires the user to brows for a working directory. This is the 
 * **Registering images of the same tile through all the cycles and saving multichannel_multicycle hyperstacks per each tile.** [*via S2_RegistInPlace_SaveMultiCycleImagesPerFOV.ijm*].
   * Following running this macro, a dialog box pops up (Figure 2) asking the user to again enter the number of cycles, columns and rows of the tile matrix and the number of channels.
 
-Figure 2
-![](Images/Figure%202.png) 
+    Figure 2
+    ![](Images/Figure%202.png) 
 
 
   * Next, another dialog box pops up (Figure 3) asking the user to enter the name of each channel as well as choosing which channel should be used for registering. 
