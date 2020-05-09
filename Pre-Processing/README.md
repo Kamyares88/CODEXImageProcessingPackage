@@ -6,8 +6,8 @@ In the pre-processing step, we apply the following processes to the raw images i
   
   * If the raw images are captured with any microscope other than a Keyence, the user should modify the function "openimage" at line 91 of the macro *S1_FocusSelection_SaveSingleFOVImages.ijm*. This function follows the naming format of the Keyence software which is *ROI#_Tile#_Z slice#_Chanel#.tif*. (For example: 1_00012_10_CH2.tif).
   
-Figure 1 
-![](Images/Figure%201.png) 
+    Figure 1 
+    ![](Images/Figure%201.png) 
 
 This macro also requires the user to brows for a working directory. This is the directory in which the macro will save all the output images. This directory will be used by the next macro *S2_RegistInPlace_SaveMultiCycleImagesPerFOV.ijm* as the source directory.
 
@@ -21,5 +21,5 @@ This macro also requires the user to brows for a working directory. This is the 
 
   * Next, another dialog box pops up (Figure 3) asking the user to enter the name of each channel as well as choosing which channel should be used for registering. 
   
-Figure 2=3
-![](Images/Figure%203.png) 
+    Figure 3
+    ![](Images/Figure%203.png) 
