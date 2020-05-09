@@ -6,6 +6,6 @@ In the pre-processing step, we apply the following processes to the raw images i
   
   * If the raw images are captured with any microscope other than a Keyence, the user should modify the function "openimage" at line 91 of the macro *S1_FocusSelection_SaveSingleFOVImages.ijm*. This function follows the naming format of the Keyence software which is *ROI#_Tile#_Z slice#_Chanel#.tif*. (For example: 1_00012_10_CH2.tif).
   
-![](Images/Figure%201.png)
+                                       ![](Images/Figure%201.png)
 
  
