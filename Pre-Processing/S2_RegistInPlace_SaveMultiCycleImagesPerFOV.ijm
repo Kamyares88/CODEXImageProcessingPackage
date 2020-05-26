@@ -25,22 +25,23 @@ Dialog.addCheckbox("Batchmode processing", false);
 Dialog.show();
 CycleNum = Dialog.getNumber();
 MIAcol = Dialog.getNumber();
-MIArow = Dialog.getNumber();;
+MIArow = Dialog.getNumber();
 Channels = Dialog.getNumber();
 BatchMode = Dialog.getCheckbox();
 // This dialog gets a generic name for each of the channels. "DAPI", "FITC", "Cy3", "Cy5", and "Cy7" are examples 
 Dialog.create("Channels Info");
+ChannelNamesList=newArray("DAPI","FITC","Cy3","Cy5","Cy7");
 for (i = 1; i <= Channels; i++) {
-Dialog.addString("Channel "+i, "...")
-Dialog.addToSameRow();
-Dialog.addCheckbox("Use for Registering in place", false)
+	Dialog.addChoice("Channel "+i, ChannelNamesList);
+	Dialog.addToSameRow();
+	Dialog.addCheckbox("Use for Registering in place", false);
 }
 Dialog.show();
 ChannelNames=newArray(Channels);
 RegisteringCheck=newArray(Channels);
 for (i = 1; i <= Channels; i++) {
 	j=i-1;
-	ChannelNames[j]=Dialog.getString();
+	ChannelNames[j]=Dialog.getChoice();
 	RegisteringCheck[j]=Dialog.getCheckbox();
 	if (RegisteringCheck[j]) {
 		RegisterChannel=j;
@@ -67,7 +68,8 @@ for(f=1; f<=(MIAcol*MIArow); f++){									// loop through FOVs
 //---------------------------------------------------------------------------------------------		
 // Registration
 	print ("Regitring-in-Place for Cycle"+c+"_FOV"+f+".tif");
-	
+
+	
 	for (i = 1; i <= Channels; i++) {
 		run("Images to Stack", "name="+ChannelNames[i-1]+" title=C"+i+" use");
 	}
@@ -79,7 +81,8 @@ for(f=1; f<=(MIAcol*MIArow); f++){									// loop through FOVs
 	run("MultiStackReg", "stack_1=Mask action_1=Align file_1="+WorkingDIR+"reg-"+f+".txt stack_2=None action_2=Ignore file_2=[] transformation=[Rigid Body] save");
 	selectWindow("Mask");
 	close();
-	// Applying the registering to all the channels
+
+	// Applying the registering to all the channels
 	for (i = 1; i <= Channels; i++) {
 		run("MultiStackReg", "stack_1="+ChannelNames[i-1]+" action_1=[Load Transformation File] file_1="+WorkingDIR+"reg-"+f+".txt stack_2=None action_2=Ignore file_2=[] transformation=[Rigid Body]");
 	}
@@ -93,7 +96,7 @@ for(f=1; f<=(MIAcol*MIArow); f++){									// loop through FOVs
 		setSlice(3);
 		ColorSet(ChannelNames[2]);
 	}else {
-		run("Merge Channels...", "c1="+ChannelNames[0]+" c2="+ChannelNames[1]+" c3="+ChannelNames[2]+"  c4="+ChannelNames[3]+"create");
+		run("Merge Channels...", "c1="+ChannelNames[0]+" c2="+ChannelNames[1]+" c3="+ChannelNames[2]+"  c4="+ChannelNames[3]+" create");
 		setSlice(1);
 		ColorSet(ChannelNames[0]);
 		setSlice(2);
@@ -134,6 +137,6 @@ function ColorSet(ChannelName) {
 		color=1;	
 	}	
 	if (color==0) {
-		run("Grays")
+		run("Grays");
 	}
 }
