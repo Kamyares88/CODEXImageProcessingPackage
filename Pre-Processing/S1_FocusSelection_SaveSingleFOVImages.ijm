@@ -28,17 +28,36 @@ Dialog.addNumber("CycleNum:", 2,0,3, "Number of Cycles");
 Dialog.addNumber("MIAcol:", 7,0,3, "Number of Columns in the MIA");
 Dialog.addNumber("MIArow:", 8,0,3, "Number of Rows in the MIA");
 Dialog.addNumber("Channels:", 3,0,3, "Number of fluorescent channels");
-Dialog.addNumber("Zsec:", 15,0,3, "Number of Z slices imaged at each FOV");
+//Dialog.addNumber("Zsec:", 15,0,3, "Number of Z slices imaged at each FOV");
 Dialog.addCheckbox("Raw Images Are in RGB", false);
 Dialog.addCheckbox("Batchmode processing", false);
+Dialog.addCheckbox("Multi Region Imageing", false);
 Dialog.show();
 CycleNum = Dialog.getNumber();
 MIAcol = Dialog.getNumber();
 MIArow = Dialog.getNumber();;
 Channels = Dialog.getNumber();
-Zsec = Dialog.getNumber();
+//Zsec = Dialog.getNumber();
 ColorCapture = Dialog.getCheckbox();
 BatchMode = Dialog.getCheckbox();
+MultiRegion = Dialog.getCheckbox();
+// Another dialog for more information
+Dialog.create("Dataset Info2");
+for (i = 1; i <= CycleNum; i++) {
+	Dialog.addNumber("Cycle "+i+" # of z slices ...", 10);
+}
+if (MultiRegion==true) {
+	Dialog.addString("Enter the number of the region", "1"); 
+}
+Dialog.show();
+Zslices=newArray(CycleNum);
+for (i = 1; i <= CycleNum; i++) {
+	j=i-1;
+	Zslices[j]=Dialog.getNumber();
+}
+if (MultiRegion==true) {
+	RegionNum=Dialog.getString(); 
+}
 // Selecting working directory: (Recommended) A folder in the same directory where raw images 
 //		are stored.
 showMessage("Select Working Directory");
@@ -51,7 +70,7 @@ for (c = 1; c <= CycleNum; c++) {									// loop through cycles
 	CycleDir = getDirectory("Choose a Directory");
     for (mia = 1; mia <= (MIAcol*MIArow); mia++) {					// loop through FOVs
     	for (ch = 1; ch <= Channels; ch++) {						// loop through fluorescent channels
-    			for (z = 1; z <= Zsec; z++) {						// loop through z slices
+    			for (z = 1; z <= Zslices[c-1]; z++) {						// loop through z slices
     				openimage(CycleDir,mia,z,ch);
     				if (ColorCapture==true) {
 						Color2Gray(ch);
@@ -89,27 +108,32 @@ for (c = 1; c <= CycleNum; c++) {									// loop through cycles
 // This function opens the images given their directory, FOV column and row in the MIA, Z slice
 //		 number and channel
 function openimage(DIR,MIAnum,Znum,CH) {
-	ImageName=""+DIR+"1_";
-	// MIAnum
-	if (MIAnum<10) {
-		ImageName=ImageName+"0000"+MIAnum;
+	if (MultiRegion==false) {
+		ImageName=""+DIR+"1_";
 	}
-	if (MIAnum>9 && MIAnum<100) {
-		ImageName=ImageName+"000"+MIAnum;
+	if (MultiRegion==true) {
+		ImageName=""+DIR+"1_XY0"+RegionNum+"_";
 	}
-	if (MIAnum>99) {
-		ImageName=ImageName+"00"+MIAnum;
-	}
-	// Znum
-	if (Znum<10) {
-		ImageName=ImageName+"_Z00"+Znum;
-	}
-	if (Znum>9) {
-		ImageName=ImageName+"_Z0"+Znum;
-	}
-	// CH
-	ImageName=ImageName+"_CH"+CH+".tif";
-	open(ImageName);
+		// MIAnum
+		if (MIAnum<10) {
+			ImageName=ImageName+"0000"+MIAnum;
+		}
+		if (MIAnum>9 && MIAnum<100) {
+			ImageName=ImageName+"000"+MIAnum;
+		}
+		if (MIAnum>99) {
+			ImageName=ImageName+"00"+MIAnum;
+		}
+		// Znum
+		if (Znum<10) {
+			ImageName=ImageName+"_Z00"+Znum;
+		}
+		if (Znum>9) {
+			ImageName=ImageName+"_Z0"+Znum;
+		}
+		// CH
+		ImageName=ImageName+"_CH"+CH+".tif";
+		open(ImageName);
 }
 
 // This function reads the best focus slice number from the log file and saves it in "x"
@@ -160,8 +184,6 @@ function Color2Gray(Channel) {
 		close();
 	}
 }
-
-
 
 
 
