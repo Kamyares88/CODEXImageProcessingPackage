@@ -57,4 +57,5 @@ for (i=1;i<=MIArow;i++){
 	}
 }
 run("Grid/Collection stitching", "type=[Grid: row-by-row] order=[Right & Down                ] grid_size_x="+MIAcol+" grid_size_y="+MIArow+" tile_overlap="+Overlap+" first_file_index_i=1 directory="+WorkingDIR+" file_names=Tile_{i}.tif output_textfile_name=TileConfiguration.txt fusion_method=[Linear Blending] regression_threshold=0.30 max/avg_displacement_threshold=2.50 absolute_displacement_threshold=3.50 compute_overlap computation_parameters=[Save memory (but be slower)] image_output=[Fuse and display]");
+saveAs("Tiff",WorkingDIR+"/Step3Output_Stitched.tif");
 setBatchMode(false);
