@@ -51,9 +51,10 @@ for (i=1;i<=MIArow;i++){
 		if (r==(i/2)) {
 			X=MIAcol+1-j;
 		}
-		saveAs("Tiff", WorkingDIR+"/Tile_Y"+Y+"_X"+X+".tif");
+		tile=(Y-1)*MIAcol+X;
+		saveAs("Tiff", WorkingDIR+"/Tile_"+tile+".tif");
 		close();
 	}
 }
-run("Stitch Sequence of Grids of Images", "grid_size_x="+MIAcol+" grid_size_y="+MIArow+" grid_size_z=1 overlap="+Overlap+" input=["+WorkingDIR+"] file_names=Tile_Y{y}_X{x}.tif rgb_order=rgb output_file_name=TileConfiguration_{zzz}.txt output=["+WorkingDIR+"] start_x=1 start_y=1 start_z=1 start_i=1 channels_for_registration=[Red, Green and Blue] fusion_method=[Linear Blending] fusion_alpha=1.50 regression_threshold=0.30 max/avg_displacement_threshold=2.50 absolute_displacement_threshold=3.50 compute_overlap");
+run("Grid/Collection stitching", "type=[Grid: row-by-row] order=[Right & Down                ] grid_size_x="+MIAcol+" grid_size_y="+MIArow+" tile_overlap="+Overlap+" first_file_index_i=1 directory="+WorkingDIR+" file_names=Tile_{i}.tif output_textfile_name=TileConfiguration.txt fusion_method=[Linear Blending] regression_threshold=0.30 max/avg_displacement_threshold=2.50 absolute_displacement_threshold=3.50 compute_overlap computation_parameters=[Save memory (but be slower)] image_output=[Fuse and display]");
 setBatchMode(false);
