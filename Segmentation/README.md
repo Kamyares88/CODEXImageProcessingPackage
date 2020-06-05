@@ -10,7 +10,7 @@ In this step, the user should open the Segmentation dataset in Fiji and select, 
 
 
     Figure 1
-    ![](Images/Figure%20S1.png)
+    ![](Images/FigureS1.png)
 
 
 ## Step 2. Training the pixel classifier
@@ -25,7 +25,7 @@ The following steps are done in the Ilastik software:
      
      
     Figure 2
-    ![](Images/Figure%20S2.png)     
+    ![](Images/FigureS2.png)     
      
      
    5. Once the classifier is well trained, Navigate to prediction export
