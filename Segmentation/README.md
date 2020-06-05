@@ -1,8 +1,15 @@
 # Segmentation
 
-The segmentation pipeline is based on [IMCSegmentationPipeline](https://github.com/BodenmillerGroup/ImcSegmentationPipeline) which is based on Ilastik and CellProfiler for pixel classification and segmentation, respectively.
+The segmentation pipeline is based on [IMCSegmentationPipeline](https://github.com/BodenmillerGroup/ImcSegmentationPipeline) which is based on Ilastik and CellProfiler for pixel classification and segmentation, respectively. This pipeline is a machine learning based segmentation pipeline in which we first select a small portion of the dataset (Step 1) in order to use for training the model via mannual annotation of the training dataset (Step 2). Next the trained model will be applied to the entire dataset (Step 3) resulting in a "probability" image of the dataset. The probability image will be used in the CellProfiler software in order to create a segmentation mask (Step 4).
 
-## Step 1. Preparing the output of the Pre-Processing for Segmentation
+Details of abovementioned steps are as follows:
+
+## Step 1. Preparing the output of the Pre-Processing for Segmentation:
+
+In this step, the user should open the Segmentation dataset in Fiji and select, duplicate, and save 5 to 10 small square-sized FOVs of it in a working directory. All channels of the segmentation dataset should be included in the small images. The pixel size of the small FOVs may vary depending on the objective that is used for imaging but 250 pixel for 20x objectives and 500 pixel for 40x objectives are our recommendation. The user should try to select the small FOVs from regions of the image with different cell density and morphology. This way, the trained model will be more generic for segmenting th entire image. Figure 1 shows an example of 6 regions that we selected from the sample dataset. The images show the DAPI channel. Our point here is to show that each of the selected regions have distinct morphological characteristics as well as clear differences in their cell density. 
+
+
+
 
 ## Step 1. Training the pixel classifier
 
