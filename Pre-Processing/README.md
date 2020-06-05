@@ -55,16 +55,13 @@ While running, the macro frequently asks the user to browse the directory in whi
     Figure 7
     ![](Images/Figure%207.png) 
     
-  * Next, another dialogbox pops asking the user to enter the average gray value of the background in each and every channel of every cycle except for the reference channel (Figure 8). This values are very important for performing an accurate background subtraction. For recording these values the user should open the output of step 3 and finds a region in the image where there is no tissue (Figure 9), or in case that such region does not exist, finding a region in each of the fluorescent channels where the cells are not positive for that marker (Figure 10). After finding these locations, the user will draw a rectangle on these regions in both the blank cycles and the marker cycles. The rectangles need to be the same size and on exact same locations. The user can utilize ROI manager under tools in order to save the drawn rectangle and impose it on another image. Next, by selecting Analyze>measure, the user will measure average signal intensity of the specified region by the rectangle in every channel.
+  * Next, another dialogbox pops asking the user to enter the average gray value of the background in each and every channel of every cycle except for the reference channel (Figure 8). This values are very important for performing an accurate background subtraction. For recording these values the user should open the output of step 3 and finds a region in the image where there is no tissue (Figure 9), or in case that such region does not exist, finding a region in each of the fluorescent channels where the cells are not positive for that marker. After finding these locations, the user will draw a rectangle on these regions in both the blank cycles and the marker cycles. The rectangles need to be the same size and on exact same locations. The user can utilize ROI manager under tools in order to save the drawn rectangle and impose it on another image. Next, by selecting Analyze>measure, the user will measure average signal intensity of the specified region by the rectangle in every channel.
   
     Figure 8
     ![](Images/Figure%208.png)
 
     Figure 9
     ![](Images/Figure%209.png)
-    
-    Figure 10
-    ![](Images/Figure%2010.png)
 
   * Next, the user is asked to browse for the working directory. This is the directory in which results of this step will be saved.
   
@@ -75,9 +72,9 @@ At the end of this step, single channel images of the blank cycles as well as ba
 * **Saving the dataset for segmentation and post-processing** [*Via S5_NamingAndArrangingData.ijm*]
   * Following running this macro, a dialog box pops up which is identical to the first dialog box poped up when running the previous step (Figure 7).
   
-  * Next, another dialog box pops up (Figure 11), in which the user is asked to enter the marker name correponding to the reference channel (In the case of the sample data, DAPI) and the rest of the channels imaged in the non-blank cycles. User can type in the name of the markers (e.g. CD19). For cell segmentation of the images, one might not need to use all of the images. In this case the user may uncheck any of the images that they decide to drop. The segmentation dataset will only include those images that have been checked at this step. 
+  * Next, another dialog box pops up (Figure 10), in which the user is asked to enter the marker name correponding to the reference channel (In the case of the sample data, DAPI) and the rest of the channels imaged in the non-blank cycles. User can type in the name of the markers (e.g. CD19). For cell segmentation of the images, one might not need to use all of the images. In this case the user may uncheck any of the images that they decide to drop. The segmentation dataset will only include those images that have been checked at this step. 
   
-    Figure 11
+    Figure 10
     ![](Images/Figure%2011.png)
 
   * Next, the user is asked to browse for the working directory in which the segmentation dataset will be saved. 
