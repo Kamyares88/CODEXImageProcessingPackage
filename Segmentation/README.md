@@ -9,8 +9,8 @@ Details of abovementioned steps are as follows:
 In this step, the user should open the Segmentation dataset in Fiji and select, duplicate, and save 5 to 10 small square-sized FOVs of it in a working directory. All channels of the segmentation dataset should be included in the small images. The pixel size of the small FOVs may vary depending on the objective that is used for imaging but 250 pixel for 20x objectives and 500 pixel for 40x objectives are our recommendation. The user should try to select the small FOVs from regions of the image with different cell density and morphology. This way, the trained model will be more generic for segmenting th entire image. Figure 1 shows an example of 6 regions that we selected from the sample dataset. The images show the DAPI channel. Our point here is to show that each of the selected regions have distinct morphological characteristics as well as clear differences in their cell density. 
 
 
-    Figure 1
-    ![](Images/FigureS1.png)
+   Figure 1
+   ![](Images/FigureS1.png)
 
 
 ## Step 2. Training the pixel classifier
@@ -24,8 +24,8 @@ The following steps are done in the Ilastik software:
      In general, the user does not need to annotate the entire image. But as a rule of thumb, the more the annotation, the higher would be the accuracy of the classifier. Figure 2 shows that by labeling only one cell in the left image, the classifier is able to efficiently label all othe nuclei and membrane of other cells. In this case, nnaccuracies such as connected nuclei can be addressed by labeling more cells. 
      
      
-    Figure 2
-    ![](Images/FigureS2.png)     
+   Figure 2
+   ![](Images/FigureS2.png)     
      
      
    5. Once the classifier is well trained, Navigate to prediction export
