@@ -35,5 +35,13 @@ The following steps are done in the Ilastik software:
    ![](Images/FigureS2.png)     
      
      
-   5. Once the classifier is well trained, Navigate to prediction export
+   5. Once the classifier is well trained, Navigate to *prediction export*. Select *Choose Export Image Settings...* and under the "Transformations" section check the "COnvert to data type" and select "Unsigned 16-bit" from the drop down menu. Next, under "Output File Info" select "Tiff" format and click ok. Then you can click the *Export All* button.
+   
+## Step 3. Applying the trained model to the entire Segmentation dataset
+
+   At this step, Navigate to the *Batch Processing* section of the Ilastik software and select the Segmentation dataset saved in the step 5 of the Pre-processing process. Then, Click on *Process All Files*. 
+   
+## Step 4. Creating the segmentation mask out of the Ilastik output
+
+   
      
