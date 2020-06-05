@@ -17,9 +17,9 @@ In the pre-processing step, we apply the following processes to the raw images i
     Figure 3
     ![](Images/Figure%203.png) 
 
-This macro also requires the user to brows for a working directory. This is the directory in which the macro will save all the output images. This directory will be used by the next macro *S2_RegistInPlace_SaveMultiCycleImagesPerFOV.ijm* as the source directory.
+This macro also requires the user to browse for a working directory. This is the directory in which the macro will save all the output images. This directory will be used by the next macro *S2_RegistInPlace_SaveMultiCycleImagesPerFOV.ijm* as the source directory.
 
-While running, the macro frequently asks the user to brows the directory in which the raw images of each cycle are located. This way the user has the freedom of having the raw images of each cycle saved in various locations (e.g. external hard drives) and still process all of them in one run of this macro.
+While running, the macro frequently asks the user to browse the directory in which the raw images of each cycle are located. This way the user has the freedom of having the raw images of each cycle saved in various locations (e.g. external hard drives) and still process all of them in one run of this macro.
 
 
 * **Registering images of the same tile through all the cycles and saving multichannel_multicycle hyperstacks per each tile.** [*via S2_RegistInPlace_SaveMultiCycleImagesPerFOV.ijm*].
@@ -34,9 +34,9 @@ While running, the macro frequently asks the user to brows the directory in whic
     Figure 5
     ![](Images/Figure%205.png) 
     
-  * Next, the user is asked to brows for the working directory. This is the directory in which results of this step will be saved.
+  * Next, the user is asked to browse for the working directory. This is the directory in which results of this step will be saved.
   
-  * Next, the user is asked to brows for a source directory. This is the directory in which the results of Step 1 are saved.
+  * Next, the user is asked to browse for a source directory. This is the directory in which the results of Step 1 are saved.
   
 * **Stitching the tiles together** [*via S3_StitchWithRegistration.ijm*]
   * Following running this macro, a dialog box pops up (Figure 6) asking the user to enter the number of columns and rows of the tile matrix as well as the overlap percentage between the adjacent tiles. Here, if the user prefers to do the processing in the batch more, they can select option "Batchmode processing."
@@ -44,9 +44,9 @@ While running, the macro frequently asks the user to brows the directory in whic
     Figure 6
     ![](Images/Figure%206.png) 
     
-  * Next, the user is asked to brows for the working directory. This is the directory in which results of this step will be saved.
+  * Next, the user is asked to browse for the working directory. This is the directory in which results of this step will be saved.
   
-  * Next, the user is asked to brows for a source directory. This is the directory in which the results of Step 1 are saved.
+  * Next, the user is asked to browse for a source directory. This is the directory in which the results of Step 2 are saved.
   
 
 * **Performing Background Subtraction** [*Via S4_BackgroundSubtraction.ijm*]
@@ -55,10 +55,36 @@ While running, the macro frequently asks the user to brows the directory in whic
     Figure 7
     ![](Images/Figure%207.png) 
     
-  * Next, another dialogbox pops asking the user to enter the average gray value of the background in each and every channel of every cycle except for the reference channel. This values are very important for performing an accurate background subtraction. For recording these values the user should open the output of step 3 and finds a region in the image where there is no tissue (Figure 8), or is such region does not exist, finding a region in each of the fluorescent channels where the cells are not positive for that marker (Figure 9). After finding these locations, the user will draw a rectabgle on these regions in both the blank cycles and the marker cycles. Next, 
+  * Next, another dialogbox pops asking the user to enter the average gray value of the background in each and every channel of every cycle except for the reference channel. This values are very important for performing an accurate background subtraction. For recording these values the user should open the output of step 3 and finds a region in the image where there is no tissue (Figure 8), or in case that such region does not exist, finding a region in each of the fluorescent channels where the cells are not positive for that marker (Figure 9). After finding these locations, the user will draw a rectangle on these regions in both the blank cycles and the marker cycles. The rectangles need to be the same size and on exact same locations. The user can utilize ROI manager under tools in order to save the drawn rectangle and impose it on another image. Next, by selecting Analyze>measure, the user will measure average signal intensity of the specified region by the rectangle in every channel.
+  
+    Figure 8
+    ![](Images/Figure%208.png)
 
+    Figure 9
+    ![](Images/Figure%209.png)
 
+  * Next, the user is asked to browse for the working directory. This is the directory in which results of this step will be saved.
+  
+  * Next, the user is asked to browse for a source directory. This is the directory in which the results of Step 3 are saved.
+  
+At the end of this step, single channel images of the blank cycles as well as background subtracted images of each marker are saved in the working directory.
 
-At this point the Pre-processing step is over and the user may navigate to the segmentation step.
+* **Saving the dataset for segmentation and post-processing** [*Via S5_NamingAndArrangingData.ijm*]
+  * Following running this macro, a dialog box pops up which is identical to the first dialog box poped up when running the previous step (Figure 7).
+  
+  * Next, another dialog box pops up (Figure 10), in which the user is asked to enter the marker name correponding to the reference channel (In the case of the sample data, DAPI) and the rest of the channels imaged in the non-blank cycles. User can type in the name of the markers (e.g. CD19). For cell segmentation of the images, one might not need to use all of the images. In this case the user may uncheck any of the images that they decide to drop. The segmentation dataset will only include those images that have been checked at this step. 
+  
+    Figure 10
+    ![](Images/Figure%2010.png)
+
+  * Next, the user is asked to browse for the working directory in which the segmentation dataset will be saved. 
+  
+  * Next, the user is asked to browse for the working directory in which the post-processing dataset will be saved.
+  
+  * Next, the user is asked to browse for a source directory. This is the directory in which the results of Step 4 are saved.
+  
+  
+  
+**At this point the Pre-processing step is over and the user may navigate to the segmentation step.**
   
 
