@@ -129,4 +129,7 @@ for (i = 1; i <=CycleNum; i++) {
 }
 
 run("Images to Stack", "name=StackedImage title=[] use");
+getDimensions(w, h, channels, slices, frames);
+//Switching channels with slices. In the segmentation step, Ilastik needs this modification.
+run("Stack to Hyperstack...", "order=xyczt(default) channels="+slices+" slices="+channels+" frames=1 display=Color");
 save(SegWorkingDIR+"StackedImage.tif");
