@@ -1,102 +1,74 @@
+In the portprocessing step, The following processes will be done on the data:
+    1. Reading the raw protein expression in each cell. 
+    2. Data normalization (log transformation and compensating the interchannel signal intensity inconsistency).
+    3. Performing unsupervised clustering on the data.
+    4. Choosing the optimum number of clusters.
+    5. Hierarchical clustering on the clusters and visualing each clusters average protein expression.
+    6. Annotating each cluster.
+    7. Visualizing cell types or cell clusters on the fluorescent images.
+    8. Performing cell-cell interaction analysis.
+    9. Performing neighborhood analysis based on cells architectural positioning in the tissue (to be added in next versions of the package).
+
+The following walks you through the steps that are needed to perform each of the 9 tasks mentioned above.
+
+### Step 0. Downloading the MATLAB functions of the package and making the working and source directories for the Post-Processing procedure:
+
+A "Matlab and Python Functions" folder is uploaded in the PostProcessing folder of this package. This folder contains all the library of functions that we will be utilizing for processing our imaging data. After clonning this repository into your local device, click on "set path" in your MATLAB, and add this folder into your MATLAB path library. This way MATLAB reads and runs all the functions provided to you in this package. Alternatively you can copy the path of the function folders and enter the following line of code in MATLAB command line:
+
+
 ```MATLAB
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%% Kamyar Esmaeili Pourfarhangi, PhD
-%%% Tan Lab
-%%% Children's Hospital of Philadelphia
-%%% 05/13/2020
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-clear all
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                   Controls                              %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% This section, serves as a control over the pipeline. The steps whose
-%   assigned value is 1 will be ran by the algorithm, and those whose
-%   assigned value is set to 0 by the user won't be ran.
-% This section allows the user to run the entire code, yet run it step by
-%   step, or do some modification on some steps, and only run those steps.
-%   At the end of each step, the pipeline saves the results, so once one
-%   step is ran and the "SessionData" is saved, that step could always be 
-%   bypassed through here. 
-
-Step1=1;    % Reading the raw protein expression
-Step2=1;    % Normalizing
-Step3=1;    % Clustering
-Step4=1;    % Clustering QC and choosing the optimum number of clusters
-Step5=1;    % Visualizing clusters' marker expression (HC on clusters)
-Step6=1;    % Cell-cell interaction
-Step7=1;    % Neighborhood Analysis
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 % ParentDir is the directory where the folders containing input data and
 % functions are placed
-ParentDIR = '/Users/esmaeilipk/Google Drive/PostDoc/ImageProcessing017_PackageDeveloping/PostProcessing/Version 2';
-
+ParentDIR = '/Users/Google Drive/CODEXImageProcessingPackage/PostProcessing/';
 % Children directories
 InputDIR = '/Input Data';
 PackageDIR = '/MATLAB and Python Functions';
 OutputDIR = '/PostProcessing Output';
 
-% Adding the function folder to the search path of current MATLAB session
 addpath(strcat(ParentDIR,PackageDIR));
+```
+As you may have noticed, we have made a directory named "ParentDIR". This is the directory where the PostProcessing part of the package is clonned into. In addition to the folder "MATLAB and Python Functions" which gets downloaded by the package and contains the functions of the package, we have made two other folders in the "ParentDIR". "Input Data" folder in which we copy all the post-processing dataset that was the output of Step 5 of the pre-processing procedure. The other directory is "PostProcessing Output" which is an empty folder and will be used by the package to deposit all the output results of the postprocessing procedure into. These two folders are introduced to MATLAB as "InputDIR" and "OutputDIR" respectively.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Step 1: Reading Raw Protein Expression For Each Cell
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-if Step1==1
-    ChannelNames={'B220','CD106','CD11b','CD11c','CD16-32',...
-        'CD169','CD19','CD21-35','CD27','CD3','CD31',...
-        'CD35','CD4','CD44','CD45','CD5','CD71',...
-        'CD79b','CD8a','CD90','ERTR7','F4-80','IgD',...
-        'IgM','Ly6C','Ly6G','MHCII','NKp46',...
-        'TCR','Ter119'};
-    MaskName='mask.tiff';
-    [RawSignal,cells,cell_elements]=RawDataReader(ChannelNames,MaskName,strcat(ParentDIR,InputDIR));
+### Step 1. Reading Raw Protein Expression
 
-    save('SessionData.mat','ChannelNames','RawSignal','cells','cell_elements');
+At this step, the user needs to introduce the name of the input images to the package, so that the reader function could open them one by one and reads protein expression. The cell array "ChannelNames" is the one that will contain the name of the channels. These names should be exactly the same as the marker images located in the "InputDIR" excluding the ".tif".
 
-else
-    load('SessionData.mat');
-end
+Another image that is needed by the reader function is the mask image generated in the Segmentation step which is also located in the "InputDIR". We save the name of the mask image in the variable "MaskName". In our sample dataset, the name of the mask image is "mask.tiff".
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Step 2: Normalizing
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-if Step2==1
-    % Primary Normalization: Normalizing data at each channel independently
-    ZNormalizedSignal=Znormalizer2(RawSignal,2); % Applying Z-score 
-                                                 % normalization with 2%
-                                                 % CutOff defined
-    % Alternatives for primary normalization:
-    % ZNormalizedSignal=Znormalizer(RawSignal);
-    % LogNormalizedSignal=Lognormalizer(RawSignal);
-    % LogNormalizedSignal2=Lognormalizer2(RawSignal,2);
+```MATLAB
+ChannelNames={'CD19','CD3e','CD11b','CD54','Cxcl12','CD117','DAPI'};
+MaskName='mask.tiff';
+
+[RawSignal,cells,cell_elements]=RawDataReader(ChannelNames,MaskName,strcat(ParentDIR,InputDIR));
+```
+
+### Step 2. Data Normalization and standardization
+
+The output of the reader function is a raw read of average gray value of the pixels within the boundary of each cell. However, this values need to be normalized. In our package, four options are provided for normalization, namely Log normalization, Z-score nomralization, Log normalization with cut off and Z-score normalization with cut off. The cut off is the top percentile of the data that will be intentionally set to zero because usually they are false positives. In the example bellow, We have performed a Z-normalization with 2% cut off. All the four introduced normalizing function, process the data of each channel independently from the other channels and do not compensate for the inter-channel variability of the signal.
+
+```MATLAB
+ZNormalizedSignal=Znormalizer2(RawSignal,2); 
+% Alternatives for primary normalization:
+% ZNormalizedSignal=Znormalizer(RawSignal);
+% LogNormalizedSignal=Lognormalizer(RawSignal);
+% LogNormalizedSignal2=Lognormalizer2(RawSignal,2);
+```
+
+In order to remove the inter-channel variability, the following min max normalization is applied to the pre-normalized data. Next, we also save the results in order to use them in python in the next step.
+
+```MATLAB
+NormalizedData=MinMaxNormalizer(ZNormalizedSignal);
+save('SessionData.mat','ChannelNames','RawSignal','cells','cell_elements','NormalizedData');
     
-    % Secondary Normalization: Compensating between-channel variability
-    NormalizedData=MinMaxNormalizer(ZNormalizedSignal); 
-    
-    save('SessionData.mat','ChannelNames','RawSignal','cells','cell_elements','NormalizedData');
-else
-    load('SessionData.mat');
-end
+```
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Step 3: Clustering
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% This step includes performing K-means and Ward Agglomerative Hierarchical
-% clusterings on the normalized data.
-% The Python code "ClusteringImageData.py" in the "MatLab and Python 
-% Functions" folder needs to be ran. The Python code saves the results in 
-% csv text files in the "Post-Processing Output" folder.
-if Step3==1
-    UserResponse='N';
-    while UserResponse~='Y'
-        UserResponse=input('Please navigate to a python editor and run the code "ClusteringImageData.py" located\n in "MatLab and Python Functions" folder. Did you run it? [Y/N]','s');
-    end
-end
+### Step 3. Performing unsupervised clustering
+
+This step is performed via Sklearn package in Python. K-means and Ward Agglomerative Hierarchical clustering are the two unsupervised clustering algorithm that we apply to the single cell protein expression data. The user needs to make sure that the python is installed on their computer and they have a text editor with the capability of running python. We recommend using Spyder for running python. 
+
+The python code "ClusteringImageData.py" in the "MatLab and Python Functions" folder should be opened and ran in python. The results of the clustering willbe saved in csv format in the "Post-Processing Output" folder. 
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
