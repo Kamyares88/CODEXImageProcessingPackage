@@ -1,13 +1,14 @@
 In the portprocessing step, The following processes will be done on the data:
-    1. Reading the raw protein expression in each cell. 
-    2. Data normalization (log transformation and compensating the interchannel signal intensity inconsistency).
-    3. Performing unsupervised clustering on the data.
-    4. Choosing the optimum number of clusters.
-    5. Visualizing each cell cluster average marker expression and cell type annotation.
-    6. Annotating each cluster.
-    7. Visualizing cell types or cell clusters on the fluorescent images.
-    8. Performing cell-cell interaction analysis.
-    9. Performing neighborhood analysis based on cells architectural positioning in the tissue (to be added in next versions of the package).
+
+   1. Reading the raw protein expression in each cell. 
+   2. Data normalization (log transformation and compensating the interchannel signal intensity inconsistency).
+   3. Performing unsupervised clustering on the data.
+   4. Choosing the optimum number of clusters.
+   5. Visualizing each cell cluster average marker expression and cell type annotation.
+   6. Annotating each cluster.
+   7. Visualizing cell types or cell clusters on the fluorescent images.
+   8. Performing cell-cell interaction analysis.
+   9. Performing neighborhood analysis based on cells architectural positioning in the tissue (to be added in next versions of the package).
 
 The following walks you through the steps that are needed to perform each of the 9 tasks mentioned above.
 
@@ -126,55 +127,57 @@ After annotating cell types, the user needs to enter the name of the cell types 
 
 ```MATLAB
 %CellTypeNames={'CD4(-)CD8(-)DC','IgM(hi)Stromal','Stromal 1','Stromal 2','Stromal 3','Stromal 4','ERTR(+)Stromal','Vascular','CD8(+)MHCII(+)','Erythroid','Erythroid marginal w Stromal','CD11c(+)Bcell','NKcell','FDC','Bcell','Follicular Macs','Macs','Marginal Zone Macs','No ID','CD4(+)Tcell','Marginal Zone CD4(+)Tcell','CD8(+)Tcell','B220(+)DN Tcell'};
-    prompt='Please enter the cluster number of each cell type in the form of a cell array: ';
-    CellTypeClusters = input(prompt);
-    %{24,26,20,12,15,21,31,17,7,[30,2],11,32,34,3,[25,5,19,16,1],6,14,9,[28,23],[13,4,33],29,22,10};
-    
-    save('SessionData.mat','ChannelNames','RawSignal','cells',...
-        'cell_elements','NormalizedData','BestClusterNum',...
-        'eva_Kmeans_sil','eva_Kmeans_DB','eva_WAggHC_sil','eva_WAggHC_DB',...
-        'CellCluster_Kmeans','CellCluster_WAggHC','CellTypeNames','CellTypeClusters');
-else
-    load('SessionData.mat');
-end
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Visualizing cell clusters on images
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Here we have the oportunity of visualing cell clusters of interest on the
-% images to visually confirm the cell tye asignment
+```
+
+Although we tried to optimize the number of clusters, the user might find out that there are still two or more than two rows that should all get the same label (e.g. T cells or B cells). In order to make it possible, the user should enter the cluster number (the number on the right side of each row of the heatmap) in the form of the cell array and save it in a variable named "CellTypeClusters".
+
+```MATLAB
+%CellTypeClusters={24,26,20,12,15,21,31,17,7,[30,2],11,32,34,3,[25,5,19,16,1],6,14,9,[28,23],[13,4,33],29,22,10};
+```
+In the example above, cluster 24 is the only cluster type that the algorithm will recognize as "CD4(-)CD8(-)DC". however clusters 30 and 2 will be both recognized by the algorithm as the same cell type "Erythroids".
+Note: The step above is necessary to do even if all the the cell types contain one clusters.
+
+### Step 6. Visualizing cell clusters or cell types superimposed on the fluorescent images
+One way to check whether everything so far makes sense, is to superimpose the recognized cell types or individual clusters on the fluorescent images and see whether they are in concert with the images or not. For example, if one superimposes the "B cells" on the image of the CD19 marker, all cells that are positive for CD19 should have been recognized as B cells. This can act as visual QC on the obtained results. In order to do so, the following code must be entered in the command line of MATLAB:
+
+```MATLAB
 ClusterPlot({[30,2],[25,5,19,16,1],[13,4,33]},{'r','b','y'},CellCluster_Kmeans,...
     cell_elements,strcat(ParentDIR,InputDIR),'mask.tiff','CD3.tif',...
     'CD3_dots','CD3_shape')
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Step 6: Cell-Cell Interaction Analysis
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-if Step6==1
-    MaskImageName='mask.tiff';
-    NeighborMat=CellNeighborFinder(MaskImageName,strcat(ParentDIR,InputDIR));
-    [NeighborMat,IntMat,normIntMat]=CellCellX(CellTypeNames,...
+```
+
+In the above code the function ClusterPlot receives the following inputs:
+
+1. a cell array containing the cluster numbers to be visualized. If the user bin some cluster numbers in the form of a vector (e.g. [30,2] or [25,5,19,16,1]), the function will look at all of the bin clusters as the same cell types and will plot all of them with 1 color.
+
+2. a cell array containing strings that represent the color of each cell. User can choose which color each element of the cell array should be plotted with. In MATLAB, colors are represnted with one character that is usually the first letter of the color. 'r':red; 'b':blue; 'Y': Yellow; 'g':Green; 'm': Magenta; 'w': White; 'k': Black.
+
+3. CellCluster_Kmeans: is the variable containing all the clustering results for the K-means algorithm. If you have done all the steps 0 to 5, this variable already exists in your variable list.
+
+4. cell_elements: a cell array containing the pixel-wise information for every single cell. If you have done all the steps 0 to 5, this variable already exists in your variable list.
+
+5. strcat(ParentDIR,InputDIR): Defining the path where the images are stored
+
+6. 'mask.tiff': the name of the segmentation mask file. User should change it to wahtever name that have chosen for the Segmentation mask file. 
+
+7. 'CD3.tif': The name of the fluorescent image that is chosen to superimpose the cells on it. User can change it to name of the any image existing in their dataset. 
+
+8. 'CD3_dots': After running the code two images are produced. one of the images depicts the 'CD3.tif' image with selected cell groups projected on it in the form of small dots at the centroid of the cells. The function will save this image with the name that the user specifies here. 
+
+9. 'CD3_shape': After running the code two images are produced. one of the images depicts the 'CD3.tif' image with selected cell groups projected on it with their exact shapes. The function will save this image with the name that the user specifies here. 
+
+
+### Step 7. Performing cell-cell interaction analysis
+
+"CellCellX" function is the function that calculates the cell-cell interaction frequencies and plot the results in the form of a heatmap.
+
+```MATLAB
+MaskImageName='mask.tiff';
+NeighborMat=CellNeighborFinder(MaskImageName,strcat(ParentDIR,InputDIR)); % calculating neighboring cells of each cell
+[NeighborMat,IntMat,normIntMat]=CellCellX(CellTypeNames,...
         CellTypeClusters,NormalizedData,NeighborMat,BestClusterNum,...
         'CellClusters_Kmeans.csv','mask.tiff','CellCellInteraction');
     
-    save('SessionData.mat','ChannelNames','RawSignal','cells',...
-        'cell_elements','NormalizedData','BestClusterNum',...
-        'eva_Kmeans_sil','eva_Kmeans_DB','eva_WAggHC_sil','eva_WAggHC_DB',...
-        'CellTypeNames','CellTypeClusters','NeighborMat','IntMat',...
-        'normIntMat');
-else
-    load('SessionData.mat');
-end
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Step 7: Neighborhood Analysis
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% to be added.
-
-
 ```
-
 
 
