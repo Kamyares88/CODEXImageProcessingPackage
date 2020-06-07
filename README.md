@@ -1,6 +1,6 @@
 # CODEXImageProcessingPackage
 
-CODEX Image Processing Package is developed to perform all the steps of processing of the multiplexed imaging data from raw images to deep analysis such as cell-cell interaction and Neighborhood analysis.
+CODEX Image Processing Package is developed to perform all the steps of processing of the multiplexed imaging data from processing raw images to deep analyses such as cell-cell interaction and Neighborhood analysis.
 
 The procedure is divided into three steps
 1. Pre-processing steps: in which raw images will be registered and stitched together. 
