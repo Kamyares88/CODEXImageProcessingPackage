@@ -1,0 +1,13 @@
+{
+  "embeddings": [
+    {
+      "tensorName": "RBC_Test1_Annotated_WSL_Features",
+      "tensorShape": [
+        2958,
+        5120
+      ],
+      "tensorPath": "https://drive.google.com/file/d/19IqpivtR2vjqNzJuVEN-P94NqJu1viVn/view?usp=sharing",
+      "metadataPath": "https://drive.google.com/file/d/1I7YZC98Ys8NQW4uywxUoJoCYXg8bx2Xm/view?usp=sharing"
+    }
+  ]
+}
